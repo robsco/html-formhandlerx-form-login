@@ -11,11 +11,11 @@ HTML::FormHandlerX::Form::Login - An HTML::FormHandler login form.
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 
 =cut
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 $VERSION = eval $VERSION;
 
@@ -24,6 +24,15 @@ $VERSION = eval $VERSION;
 Performs login form validation, including changing passwords, forgotten passwords, and resetting passwords.
 
 If you are working under Catalyst, take a look at L<CatalystX::SimpleLogin> or L<CatalystX::Controller::Auth>.
+
+Registering...
+
+ $form = HTML::FormHandlerX::Form::Login->new( active => [ qw( email password confirm_password ) ] );
+
+ $form->process( params => { email            => $email,
+                             password         => $password,
+                             confirm_password => $confirm_password,
+                           } );
 
 Login with either an C<email> B<or> C<username> parameter.
 
@@ -77,6 +86,18 @@ When trying to actually reset a password...
 =head1 DESCRIPTION
 
 This module will validate your forms.  It does not perform any actual authentication, that is still left for you.
+
+=head2 Register
+
+You can register with either an C<email> or C<username>.
+
+Using C<email> brings in validation using L<Email::Valid>.
+
+C<email>/C<username>, C<password> and C<confirm_password> are all required fields, so will fail validation if empty.
+
+ my $form = HTML::FormHandlerX::Form::Login->new( active => [ qw( email password confirm_password ) ] );
+ 
+ $form->process( params => { email => $email, password => $password, confirm_password => $confirm_password } );
 
 =head2 Login
 
@@ -429,7 +450,11 @@ sub html_attributes
 after build_active => sub {
 	my $self = shift;
 
-	if ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active )
+	if ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active && $self->field('confirm_password')->is_active )
+	{
+		$self->field('submit')->value('Register');
+	}
+	elsif ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active )
 	{
 		$self->field('submit')->value('Login');
 	}
