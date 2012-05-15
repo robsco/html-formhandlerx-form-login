@@ -11,11 +11,11 @@ HTML::FormHandlerX::Form::Login - An HTML::FormHandler login form.
 
 =head1 VERSION
 
-Version 0.14
+Version 0.15
 
 =cut
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 $VERSION = eval $VERSION;
 
@@ -294,13 +294,15 @@ has_field token => ( type         => 'Hidden',
                      inactive     => 1,
                    );
 
-=head3 email / username
+=head3 email / username / openid_identifier
 
  $form->field('email')
  
  $form->field('username')
 
-The C<username> field, or use the specific C<email> field for extra validation (employing Email::Valid).
+ $form->field('openid_identifier')
+
+The C<openid_identifier> field used by L<Catalyst::Authentication::Credential::OpenID> for OpenID logins, C<username> field, or use the specific C<email> field for extra validation (employing Email::Valid).
 
 =cut
 
@@ -319,6 +321,14 @@ has_field username => ( type         => 'Text',
                         wrapper_attr => { id => 'field-username' },
                         inactive     => 1,
                       );
+
+has_field openid_identifier => ( type         => 'Text',
+                                 required     => 1,
+                                 messages     => { required => 'Your openid is required.' },
+                                 tags         => { no_errors => 1 },
+                                 wrapper_attr => { id => 'field-openid-identifer' },
+                                 inactive     => 1,
+                               );
                       
 =head3 old_password
 
@@ -454,7 +464,7 @@ after build_active => sub {
 	{
 		$self->field('submit')->value('Register');
 	}
-	elsif ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active )
+	elsif ( $self->field('openid_identifier')->is_active || ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active ) )
 	{
 		$self->field('submit')->value('Login');
 	}
@@ -593,6 +603,7 @@ gshank: Gerda Shank E<lt>gshank@cpan.orgE<gt>
 
 t0m: Tomas Doran E<lt>bobtfish@bobtfish.netE<gt>
 
+castaway: Jess Robinson (OpenID support)
 
 
 =head1 LICENSE AND COPYRIGHT

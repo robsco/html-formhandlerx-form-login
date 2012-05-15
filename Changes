@@ -1,5 +1,7 @@
 Revision history for HTML-FormHandlerX-Form-Login
 
+0.15    15 May 2012 - castaway patch to support openid
+
 0.14    23 April 2012 - register
 
 0.13    reduce minlength for password, not our place to impose anything.
