@@ -11,11 +11,11 @@ HTML::FormHandlerX::Form::Login - An HTML::FormHandler login form.
 
 =head1 VERSION
 
-Version 0.15
+Version 0.16
 
 =cut
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 $VERSION = eval $VERSION;
 
@@ -34,7 +34,7 @@ Registering...
                              confirm_password => $confirm_password,
                            } );
 
-Login with either an C<email> B<or> C<username> parameter.
+Login with either an optional C<email> B<or> C<username> parameter.
 
  my $form = HTML::FormHandlerX::Form::Login->new( active => [ qw( email password ) ] );
  
@@ -101,11 +101,9 @@ C<email>/C<username>, C<password> and C<confirm_password> are all required field
 
 =head2 Login
 
-You can choose between C<email> and C<username> for the unique identifier.
+You can choose between an optional C<email> and C<username> for the unique identifier.
 
 Using C<email> brings in validation using L<Email::Valid>.
-
-C<email>/C<username> and C<password> are all required fields, so will fail validation if empty.
 
  my $form = HTML::FormHandlerX::Form::Login->new( active => [ qw( email password ) ] );
  
@@ -464,7 +462,7 @@ after build_active => sub {
 	{
 		$self->field('submit')->value('Register');
 	}
-	elsif ( $self->field('openid_identifier')->is_active || ( ( $self->field('email')->is_active || $self->field('username')->is_active ) && $self->field('password')->is_active ) )
+	elsif ( $self->field('password')->is_active && ! $self->field('confirm_password')->is_active )
 	{
 		$self->field('submit')->value('Login');
 	}
