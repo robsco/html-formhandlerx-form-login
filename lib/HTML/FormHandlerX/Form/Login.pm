@@ -11,11 +11,11 @@ HTML::FormHandlerX::Form::Login - An HTML::FormHandler login form.
 
 =head1 VERSION
 
-Version 0.16
+Version 0.17
 
 =cut
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 $VERSION = eval $VERSION;
 
@@ -462,7 +462,7 @@ after build_active => sub {
 	{
 		$self->field('submit')->value('Register');
 	}
-	elsif ( $self->field('password')->is_active && ! $self->field('confirm_password')->is_active )
+	elsif ( ( $self->field('password')->is_active && ! $self->field('confirm_password')->is_active ) || $self->field('openid_identifier')->is_active )
 	{
 		$self->field('submit')->value('Login');
 	}
